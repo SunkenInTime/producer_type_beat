@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:producer_type_beat/const/theme.dart';
+import 'package:producer_type_beat/providers/recording_provider.dart';
 import 'package:producer_type_beat/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => RecordingProvider(),
+      ),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

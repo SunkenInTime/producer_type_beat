@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:producer_type_beat/providers/recording_provider.dart';
+import 'package:provider/provider.dart';
 
 class RecordButton extends StatefulWidget {
   RecordButton({super.key, required this.isRecording});
@@ -11,7 +13,7 @@ class _RecordButtonState extends State<RecordButton> {
   @override
   Widget build(BuildContext context) {
     // Size screenSize = MediaQuery.of(context).size;
-
+    RecordingProvider recordingProvider = context.read<RecordingProvider>();
     // Calculate the dimensions for your widget based on the screen size
     double scaleRatio = 1;
     double outerCircleSize = 75 * scaleRatio; // Adjust as needed
@@ -52,6 +54,9 @@ class _RecordButtonState extends State<RecordButton> {
                   ],
                 ),
               ),
+              onTap: () {
+                recordingProvider.stopRecording();
+              },
             ),
           )
         //Not Recording
@@ -90,6 +95,9 @@ class _RecordButtonState extends State<RecordButton> {
                   ],
                 ),
               ),
+              onTap: () {
+                recordingProvider.startRecording();
+              },
             ),
           );
   }
