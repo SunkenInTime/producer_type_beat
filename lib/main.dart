@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:producer_type_beat/const/theme.dart';
 import 'package:producer_type_beat/providers/recording_provider.dart';
+import 'package:producer_type_beat/providers/sample_provider.dart';
 import 'package:producer_type_beat/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +13,9 @@ void main() {
       ChangeNotifierProvider(
         create: (_) => RecordingProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (_) => SampleProvider(),
+      )
     ],
     child: const MyApp(),
   ));
@@ -38,6 +44,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const HomePage();
+    SampleProvider sampleProvider = context.read<SampleProvider>();
+
+    return FutureBuilder(
+      future: sampleProvider.setSampleDir(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            log(sampleProvider.listOfSamples.toString());
+            return const HomePage();
+
+          default:
+            return const Scaffold(
+              body: Center(
+                child: SizedBox(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+        }
+      },
+    );
   }
 }
