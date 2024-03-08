@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:producer_type_beat/providers/sample_provider.dart';
+import 'package:producer_type_beat/sample.dart';
+import 'package:producer_type_beat/widgets/sample_widget.dart';
+import 'package:provider/provider.dart';
 
 class SamplesScreen extends StatefulWidget {
   const SamplesScreen({super.key});
@@ -10,6 +14,8 @@ class SamplesScreen extends StatefulWidget {
 class _SamplesScreenState extends State<SamplesScreen> {
   @override
   Widget build(BuildContext context) {
+    SampleProvider sampleProvider = context.watch<SampleProvider>();
+
     double fullScreenWidth = MediaQuery.of(context).size.width;
 
     double sampleWidth = (fullScreenWidth / 2) - (fullScreenWidth / 18);
@@ -21,73 +27,12 @@ class _SamplesScreenState extends State<SamplesScreen> {
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         padding: const EdgeInsets.all(10),
+        itemCount: sampleProvider.listOfSamples.length,
         itemBuilder: (context, index) {
-          return Transform.scale(
-            scale: 1,
-            child: SizedBox(
-              width: sampleWidth,
-              height: sampleWidth,
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    child: Container(
-                      width: sampleWidth,
-                      height: sampleWidth,
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFF272727),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(33),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: sampleWidth * 0.076,
-                    top: sampleWidth * 0.135,
-                    child: Text(
-                      'Trees of House',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: sampleWidth * 0.085,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: sampleWidth * 0.73,
-                    top: sampleWidth * 0.777,
-                    child: Text(
-                      '1:30',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: sampleWidth * 0.085,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: sampleWidth * 0.076,
-                    top: sampleWidth * 0.777,
-                    child: Text(
-                      'wav',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: sampleWidth * 0.085,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          Sample currentSample = sampleProvider.listOfSamples[index];
+          return SampleWidget(
+            sampleWidth: sampleWidth,
+            currentSample: currentSample,
           );
         },
       ),

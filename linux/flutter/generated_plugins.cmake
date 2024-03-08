@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  flutter_media_metadata
   record_linux
   url_launcher_linux
 )

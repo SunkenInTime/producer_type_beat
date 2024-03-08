@@ -2,7 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_media_metadata/flutter_media_metadata.dart';
+import 'package:just_audio/just_audio.dart';
+
 import 'package:path_provider/path_provider.dart';
 
 import '../sample.dart';
@@ -14,24 +15,36 @@ class SampleProvider with ChangeNotifier {
   Future<void> setSampleDir() async {
     Directory? directory = await getExternalStorageDirectory();
     samplesDirectory = "${directory!.path}/recordings/";
-
     getSamplesFromFile();
     notifyListeners();
   }
 
+  //TODO: Creating and destroying audio files seems to be the path
   void getSamplesFromFile() async {
     List<FileSystemEntity> listOfFiles = await getFiles();
     for (FileSystemEntity file in listOfFiles) {
       log("We got data");
-      List<String> fileString = file.path.split(".")[0].split("/");
-      String fileName = fileString[fileString.length - 1];
-      // final metadata = await MetadataRetriever.fromFile(File(file.path));
-      int trackLength = 0;
-      // if (metadata.trackDuration != null) trackLength = metadata.trackDuration!;
-      Sample newSample = Sample(file.path, name: fileName, length: trackLength);
+      List<String> fileString = file.path.split("/");
+      fileString = fileString[fileString.length - 1].split(".");
+      String fileName = fileString[1].split("-")[1];
+      final audioPlayer = AudioPlayer();
+
+      await audioPlayer.setFilePath(file.path);
+      Duration? trackLength = audioPlayer.duration;
+      if (trackLength == null) log("we are cooked gang");
+
+      Sample newSample =
+          Sample(file.path, name: fileName, length: trackLength!);
       log(newSample.toString());
+
+      await audioPlayer.dispose();
+      for (Sample sample in listOfSamples) {
+        if (sample.path == newSample.path) return;
+      }
       listOfSamples.add(newSample);
     }
+
+    notifyListeners();
 
     // _listOfFiles[0].
   }
@@ -41,6 +54,10 @@ class SampleProvider with ChangeNotifier {
   //Makes sure that it's only pulling supported file formats
   Future<List<FileSystemEntity>> getFiles() async {
     List<FileSystemEntity> listOfFiles = [];
+    Directory createDir = Directory(samplesDirectory!);
+    if (!createDir.existsSync()) {
+      createDir.createSync(recursive: true);
+    }
     log(samplesDirectory!);
     for (FileSystemEntity file
         in Directory(samplesDirectory!).listSync(recursive: true)) {
