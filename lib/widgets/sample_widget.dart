@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:producer_type_beat/constant/routes.dart';
 import 'package:producer_type_beat/sample.dart';
 
 class SampleWidget extends StatelessWidget {
@@ -8,8 +11,7 @@ class SampleWidget extends StatelessWidget {
   final Sample currentSample;
   @override
   Widget build(BuildContext context) {
-    return Transform.scale(
-      scale: 1,
+    return GestureDetector(
       child: SizedBox(
         width: sampleWidth,
         height: sampleWidth,
@@ -74,6 +76,13 @@ class SampleWidget extends StatelessWidget {
           ],
         ),
       ),
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          Routes.sampleDetailsRoute,
+          arguments: currentSample,
+        );
+      },
     );
   }
 }

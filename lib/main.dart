@@ -1,10 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:producer_type_beat/const/theme.dart';
+import 'package:producer_type_beat/constant/routes.dart';
+import 'package:producer_type_beat/constant/theme.dart';
 import 'package:producer_type_beat/providers/recording_provider.dart';
 import 'package:producer_type_beat/providers/sample_provider.dart';
+import 'package:producer_type_beat/sample.dart';
 import 'package:producer_type_beat/screens/home_screen.dart';
+import 'package:producer_type_beat/screens/sample_details_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -29,6 +32,14 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: darkTheme,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        Routes.sampleDetailsRoute: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments;
+          return SampleDetailsScreen(
+            currentSample: args as Sample,
+          );
+        },
+      },
     );
   }
 }
